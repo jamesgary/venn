@@ -20,10 +20,6 @@ func main() {
 
   server := martini.Classic()
 
-  server.Get("/", func() string {
-    return "<h1>Hello, world!</h1>"
-  })
-
   server.Get("/movies/:term", func(params martini.Params, w http.ResponseWriter) string {
     w.Header().Set("Content-Type", "application/json")
 
