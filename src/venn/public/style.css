@@ -25,7 +25,7 @@ html {
   content: '';
   height: 100%;
   position: absolute;
-  width: 60%;
+  width: 64%;
   top: 0;
   z-index: -1;
 }
@@ -41,13 +41,21 @@ html {
 }
 .venn span {
   display: block;
+  margin: 6px 0;
+}
+.venn span a {
+  text-decoration: none;
+  color: black;
+}
+.venn span a:hover {
+  text-decoration: underline;
 }
 .tag-list {
   vertical-align: top;
 }
-.movie1-tags { width: 40%; }
-.common-tags { width: 20%; }
-.movie2-tags { width: 40%; }
+.movie1-tags { width: 37%; }
+.common-tags { width: 26%; }
+.movie2-tags { width: 37%; }
 
 /* Stolen from https://twitter.github.io/typeahead.js/css/examples.css */
 
