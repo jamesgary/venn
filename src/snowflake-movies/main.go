@@ -87,7 +87,8 @@ func main() {
     }
   })
 
-  server.Run()
+  //server.Run()
+  log.Fatal(http.ListenAndServe(":3001", server))
 }
 
 func getMovieFromId(id int, db *sql.DB) string {
