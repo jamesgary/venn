@@ -25,6 +25,11 @@ func main() {
     log.Println("Error opening postgres connection!")
     log.Fatal(err)
   }
+  err = db.Ping()
+  if err != nil {
+    log.Println("Error pinging!")
+    log.Fatal(err)
+  }
 
   server := martini.Classic()
 
