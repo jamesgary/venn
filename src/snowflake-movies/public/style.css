@@ -1,0 +1,30 @@
+html {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 18px;
+  line-height: 1.2;
+  color: #333;
+  text-align: center;
+}
+
+.keyword {
+  background-color: #10AA98;
+  color: white;
+  border-radius: 5px;
+  padding: 5px 7px;
+  border: 1px solid #042;
+  margin: 5px;
+  display: inline-block;
+}
+
+.choices .keyword {
+  cursor: pointer;
+}
+
+.restart {
+  display: none;
+}
+
+footer {
+  font-size: 12px;
+  margin-top: 20px;
+}

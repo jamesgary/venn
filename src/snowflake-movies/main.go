@@ -14,8 +14,8 @@ import (
 )
 
 func main() {
-  psqlHost := os.Getenv("VENN_PSQL_HOST")
-  assetsDir := os.Getenv("VENN_ASSETS_DIR")
+  psqlHost := os.Getenv("SNOWFLAKE_PSQL_HOST")
+  assetsDir := os.Getenv("SNOWFLAKE_ASSETS_DIR")
 
   psqlConfig := "dbname=snowflake sslmode=disable"
   if psqlHost != "" {
@@ -37,6 +37,7 @@ func main() {
   if assetsDir != "" {
     server.Use(martini.Static(assetsDir))
   }
+
   server.Get("/new_game", func(params martini.Params, w http.ResponseWriter) string {
     w.Header().Set("Content-Type", "application/json")
 
@@ -63,7 +64,45 @@ func main() {
     return fmt.Sprintf(`{"keyword": %s, "movieCount": %d, "possibleKeywords": [%s]}`, strconv.Quote(keyword), len(movieIds), strings.Join(possibleKeywords, ","))
   })
 
+  server.Get("/guess/:keywords", func(params martini.Params, w http.ResponseWriter) string {
+    w.Header().Set("Content-Type", "application/json")
+
+    keywordIds := getKeywordIdsFromStrings(strings.Split(params["keywords"], " "), db)
+    var movieIdsForKeyword [][]int
+    for _, keywordId := range keywordIds {
+      movieIdsForKeyword = append(movieIdsForKeyword, getMovieIdsWithKeywordId(keywordId, db))
+    }
+    intersectedMovieIds := getIntersection(movieIdsForKeyword)
+
+    if len(intersectedMovieIds) == 1 {
+      title := getMovieFromId(intersectedMovieIds[0], db)
+      return fmt.Sprintf(`{"movie": %s}`, strconv.Quote(title))
+    } else {
+      possibleKeywords := getKeywordsForMovies(intersectedMovieIds, db)
+      sort.Strings(possibleKeywords)
+      for i, keyword := range possibleKeywords {
+        possibleKeywords[i] = strconv.Quote(keyword)
+      }
+      return fmt.Sprintf(`{"movieCount": %d, "possibleKeywords": [%s]}`, len(intersectedMovieIds), strings.Join(possibleKeywords, ","))
+    }
+  })
+
   server.Run()
+}
+
+func getMovieFromId(id int, db *sql.DB) string {
+  rows, err := db.Query("select title from movies where id = $1", id)
+  if err != nil {
+    log.Println("Error querying postgres!")
+    log.Fatal(err)
+  }
+  var movie string
+  for rows.Next() {
+    if err := rows.Scan(&movie); err != nil {
+      log.Fatal(err)
+    }
+  }
+  return movie
 }
 
 func getRandomKeyword(db *sql.DB) (int, string) {
@@ -138,4 +177,59 @@ func appendIfMissing(slice []string, s string) []string {
     }
   }
   return append(slice, s)
+}
+
+func getKeywordIdsFromStrings(keywords []string, db *sql.DB) []int {
+  args := make([]interface{}, len(keywords))
+  qp := make([]string, len(keywords))
+  for i, v := range keywords {
+    args[i] = interface{}(v)
+    qp[i] = fmt.Sprintf("$%d", i+1)
+  }
+  rows, err := db.Query(
+    `select id from keywords where keyword IN (`+strings.Join(qp, ",")+`)`,
+    args...,
+  )
+  if err != nil {
+    log.Println("Error querying postgres!")
+    log.Fatal(err)
+  }
+
+  var keywordIds []int
+  for rows.Next() {
+    var keywordId int
+    if err := rows.Scan(&keywordId); err != nil {
+      log.Fatal(err)
+    }
+    keywordIds = append(keywordIds, keywordId)
+  }
+  return keywordIds
+}
+
+func getIntersection(idSets [][]int) []int {
+  var intersection []int
+  for _, id := range idSets[0] {
+    if isInAllArrays(id, idSets) {
+      intersection = append(intersection, id)
+    }
+  }
+  return intersection
+}
+
+func isIn(i int, set []int) bool {
+  for _, k := range set {
+    if i == k {
+      return true
+    }
+  }
+  return false
+}
+
+func isInAllArrays(i int, sets [][]int) bool {
+  for _, k := range sets {
+    if !isIn(i, k) {
+      return false
+    }
+  }
+  return true
 }
