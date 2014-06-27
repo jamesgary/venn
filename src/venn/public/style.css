@@ -1,3 +1,10 @@
+html {
+  min-width: 1100px;
+}
+
+#movie1, #movie2 {
+  margin: 0 50px;
+}
 #movie1 { float: left }
 #movie2 { float: right }
 
@@ -7,24 +14,40 @@
 }
 
 .venn {
-  width: 100%;
+  display: none;
+  position: relative;
   text-align: center;
+  width: 100%;
+  margin-top: 30px;
+}
+.venn:before, .venn:after {
+  border-radius: 100px;
+  content: '';
+  height: 100%;
+  position: absolute;
+  width: 60%;
+  top: 0;
+  z-index: -1;
+}
+.venn:after {
+  /* left circle */
+  background: rgba(255, 255, 20, 0.7);
+  left: 0;
+}
+.venn:before {
+  /* right circle */
+  background: rgba(0, 150, 255, 0.6);
+  right: 0;
 }
 .venn span {
   display: block;
 }
 .tag-list {
-  /*border-radius: 50px;*/
+  vertical-align: top;
 }
-.movie1-tags {
-  background: yellow;
-}
-.common-tags {
-  background: lightGreen;
-}
-.movie2-tags {
-  background: lightBlue;
-}
+.movie1-tags { width: 40%; }
+.common-tags { width: 20%; }
+.movie2-tags { width: 40%; }
 
 /* Stolen from https://twitter.github.io/typeahead.js/css/examples.css */
 

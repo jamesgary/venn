@@ -58,6 +58,7 @@ function populateVenn() {
   $(".common-tags").html(tagsToHtml(commonTags));
   $(".movie1-tags").html(tagsToHtml(movie1.uniqueTags));
   $(".movie2-tags").html(tagsToHtml(movie2.uniqueTags));
+  $(".venn").show();
 }
 
 function tagsToHtml(tags) {
