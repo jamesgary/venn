@@ -1,0 +1,4 @@
+*.list
+src/venn/gin-bin
+bin/*
+pkg/*
