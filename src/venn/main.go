@@ -7,12 +7,20 @@ import (
   _ "github.com/lib/pq"
   "log"
   "net/http"
+  "os"
   "strconv"
   "strings"
 )
 
 func main() {
-  db, err := sql.Open("postgres", "dbname=venn sslmode=disable")
+  psqlHost := os.Getenv("VENN_PSQL_HOST")
+  assetsDir := os.Getenv("VENN_ASSETS_DIR")
+
+  psqlConfig := "dbname=venn sslmode=disable"
+  if psqlHost != "" {
+    psqlConfig = fmt.Sprintf("host=%s %s", psqlHost, psqlConfig)
+  }
+  db, err := sql.Open("postgres", psqlConfig)
   if err != nil {
     log.Println("Error opening postgres connection!")
     log.Fatal(err)
@@ -20,6 +28,9 @@ func main() {
 
   server := martini.Classic()
 
+  if assetsDir != "" {
+    server.Use(martini.Static(assetsDir))
+  }
   server.Get("/movies/:term", func(params martini.Params, w http.ResponseWriter) string {
     w.Header().Set("Content-Type", "application/json")
 
