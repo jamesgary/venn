@@ -1,3 +1,3 @@
 CREATE TABLE movies (title varchar(255), tags text);
-CREATE INDEX ON movies ((lower(title)));
 CREATE EXTENSION pg_trgm;
+CREATE INDEX movie_trgm_idx ON movies USING gist (t gist_trgm_ops);

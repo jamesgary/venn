@@ -1,3 +1,31 @@
+#movie1 { float: left }
+#movie2 { float: right }
+
+.inputs {
+  clear: both;
+  height: 50px;
+}
+
+.venn {
+  width: 100%;
+  text-align: center;
+}
+.venn span {
+  display: block;
+}
+.tag-list {
+  /*border-radius: 50px;*/
+}
+.movie1-tags {
+  background: yellow;
+}
+.common-tags {
+  background: lightGreen;
+}
+.movie2-tags {
+  background: lightBlue;
+}
+
 /* Stolen from https://twitter.github.io/typeahead.js/css/examples.css */
 
 html {
