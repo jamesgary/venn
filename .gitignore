@@ -1,4 +1,4 @@
 *.list
-src/venn/gin-bin
+src/*/gin-bin
 bin/*
 pkg/*
