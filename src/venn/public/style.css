@@ -57,6 +57,11 @@ html {
 .common-tags { width: 26%; }
 .movie2-tags { width: 37%; }
 
+footer {
+  font-size: 12px;
+  margin-top: 20px;
+}
+
 /* Stolen from https://twitter.github.io/typeahead.js/css/examples.css */
 
 html {
